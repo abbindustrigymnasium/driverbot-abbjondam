@@ -125,15 +125,26 @@ partierna = [
     },
     
 ]
+
+
 totalaröster = 0
 borgröster = 0
 vänsterröster = 0
 blocklösa = 0
+
+#procent
 partinamnen = []
-partiprocent = []
+partiochprocent = []
 procent = []
 färger = []
 
+#röstfördelning
+röstfördelningfärger = []
+totalaröstfördelnigsstorlekar = 0
+rösfördelnigtext = []
+counter = 0
+
+#mandat
 
 
 for i in partierna: #Slumpar röster mellan min och max 
@@ -148,7 +159,7 @@ if totalaröster > 100:
         tidigare = i["röster"]
         i["röster"] = (tidigare/totalaröster) * 100
         partinamnen.append(str(i["namn"]))
-        partiprocent.append(str(i["namn"]) + " (" + str(round(i["röster"],1)) + "%)")
+        partiochprocent.append(str(i["namn"]) + " (" + str(round(i["röster"],1)) + "%)")
         procent.append(i["röster"])
         färger.append(i["färg"])
         if i["block"] == "Borgerliga blocket":
@@ -161,36 +172,95 @@ if totalaröster > 100:
 
 #röstfördelning
 
-nyafärger = färger[:len(färger)-2]
-mandatstorlekar = procent[:len(procent)-2]
-totalanyastorlekar = 0
-partimandatprocent = partinamnen[:len(partinamnen)-2]
-text = []
+röstfördelningfärger = färger[:len(färger)-2]
+röstfördelningstorlekar = procent[:len(procent)-2]
+partiröstfördelningnamn = partinamnen[:len(partinamnen)-2]
 
-counter = 0
 
-for i in mandatstorlekar:
-    totalanyastorlekar = totalanyastorlekar + mandatstorlekar[counter]
+for i in röstfördelningstorlekar:
+    totalaröstfördelnigsstorlekar = totalaröstfördelnigsstorlekar + röstfördelningstorlekar[counter]
     counter += 1
 counter = 0
 
-for i in mandatstorlekar:
-    mandatstorlekar[counter] = round((procent[counter]/totalanyastorlekar) * 100,1)
+for i in röstfördelningstorlekar:
+    röstfördelningstorlekar[counter] = round((procent[counter]/totalaröstfördelnigsstorlekar) * 100,1)
     counter += 1
 counter = 0
 
-for i in partimandatprocent:
-    text.append(str(partimandatprocent[counter]) + " (" + str(mandatstorlekar[counter]) + "%)")
+for i in partiröstfördelningnamn:
+    rösfördelnigtext.append(str(partiröstfördelningnamn[counter]) + " (" + str(röstfördelningstorlekar[counter]) + "%)")
     counter += 1
 
 #mandat 
+röstberättigad = 7588740 #0.73 * befolkningen januari 2020, 0.73 = antalröstberättigade/befolkningsmängd 2018
+counter = 0
+index = []
+mandatfärger = röstfördelningfärger.copy()
+jämförelsetal = röstfördelningstorlekar.copy()
+mandatnamn = partinamnen[:len(partinamnen)-2]
+mandatnamnochplatser = []
+totalamandat = 0
+mandat = []
 
+
+
+for i in mandatnamn:
+    if jämförelsetal[counter] < 4.0:
+        mandatnamn.pop(counter)
+        index.append(int(counter))
+  
+    if len(index) >= 1:
+        mandatfärger.pop(index[0])
+        jämförelsetal.pop(index[0])
+        index.pop(0)
+    counter += 1
+counter = 0
+
+antalöverspärr = len(mandatnamn)
+mandat = [0] * int(antalöverspärr)
+print(mandat)
+
+for i in jämförelsetal:
+    totalamandat = totalamandat + jämförelsetal[counter]
+    counter +=1 
+counter = 0    
+
+for i in jämförelsetal:
+    jämförelsetal[counter] = (röstberättigad*(jämförelsetal[counter]/totalamandat))
+    counter +=1 
+counter = 1
+röstetal = jämförelsetal.copy()
+while counter <= 349:
+    # print(max(jämförelsetal))
+    högstsindex = jämförelsetal.index(max(jämförelsetal))
+    print("högstindex" + str(högstsindex))
+    mandat[högstsindex] = mandat[högstsindex] + 1 
+    print(mandat[högstsindex])
+    jämförelsetal[högstsindex] = röstetal[högstsindex]/((2*mandat[högstsindex])+1)
+    counter += 1
+
+counter = 0
+for i in mandatnamn:
+    mandatnamnochplatser.append(str(mandatnamn[counter]) + " (" + str(mandat[counter]) + " personer)")
+    counter += 1
+
+#graf mandat
+plt.figure("Mandat")
+patches, texts = plt.pie(mandat, colors=mandatfärger, shadow=False, startangle=100,wedgeprops={"edgecolor":"0",'linewidth': 1, 'antialiased': True})
+plt.legend(patches, mandatnamnochplatser, loc="best")
+plt.rcParams['lines.linewidth'] = 5
+plt.axis('equal')
+plt.tight_layout()
+plt.title("Mandat", bbox={'facecolor':'0.8', 'pad':5})
+mng = plt.get_current_fig_manager()
+mng.window.state('zoomed')
+plt.subplots_adjust(left=None, bottom=None, right=None, top=0.9, wspace=None, hspace=None)
 
 #graf röstfördelning
 
-plt.figure(0)
-patches, texts = plt.pie(mandatstorlekar, colors=nyafärger, shadow=True, startangle=80,wedgeprops={"edgecolor":"0",'linewidth': 1, 'antialiased': True})
-plt.legend(patches, text, loc="best")
+plt.figure("Röstfördelning")
+patches, texts = plt.pie(röstfördelningstorlekar, colors=röstfördelningfärger, shadow=False, startangle=100,wedgeprops={"edgecolor":"0",'linewidth': 1, 'antialiased': True})
+plt.legend(patches, rösfördelnigtext, loc="best")
 plt.rcParams['lines.linewidth'] = 5
 plt.axis('equal')
 plt.tight_layout()
@@ -202,9 +272,9 @@ plt.subplots_adjust(left=None, bottom=None, right=None, top=0.9, wspace=None, hs
 
 #graf rösterna
 
-plt.figure(1)
-patches, texts = plt.pie(procent, colors=färger, shadow=True, startangle=80,wedgeprops={"edgecolor":"0",'linewidth': 1, 'antialiased': True})
-plt.legend(patches, partiprocent, loc="best")
+plt.figure("Röster")
+patches, texts = plt.pie(procent, colors=färger, shadow=False, startangle=100,wedgeprops={"edgecolor":"0",'linewidth': 1, 'antialiased': True})
+plt.legend(patches, partiochprocent, loc="best")
 plt.rcParams['lines.linewidth'] = 5
 plt.axis('equal')
 plt.tight_layout()
@@ -212,9 +282,6 @@ plt.title("Rösterna", bbox={'facecolor':'0.8', 'pad':5})
 mng = plt.get_current_fig_manager()
 mng.window.state('zoomed')
 plt.subplots_adjust(left=None, bottom=None, right=None, top=0.9, wspace=None, hspace=None)
-
-
-#graf mandat
 
 
 plt.show()
