@@ -12,3 +12,6 @@ driverbot-abbjondam created by GitHub Classroom
    Skapat graf för mandat enligt jämkande uddatalsmetoden (bortser från utjämmningsmandat), samt påbörjat grafer för block och för höger och vänster.
    
    
+* 03-27
+
+   Skapat graf för blockfördelning
