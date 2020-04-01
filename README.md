@@ -15,3 +15,9 @@ driverbot-abbjondam created by GitHub Classroom
 * 03-27
 
    Skapat graf för blockfördelning
+   
+   
+* 03-31
+
+   Valet skriver ut text, motor servo snurrar. Börjat med styrning via mqtt.
+
