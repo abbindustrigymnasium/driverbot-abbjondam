@@ -198,7 +198,7 @@ counter = 0
 index = []
 mandatfärger = röstfördelningfärger.copy()
 jämförelsetal = röstfördelningstorlekar.copy()
-mandatnamn = partinamnen[:len(partinamnen)-2]
+mandatnamn = partiröstfördelningnamn.copy()
 mandatnamnochplatser = []
 totalamandat = 0
 mandat = []
@@ -285,7 +285,7 @@ for i in partierna:     #Om partierna har fått mandat och vilket block de tillh
 
 counter = 0
 
-#Adderar mandaten får varje block
+#Adderar mandaten för varje block
 while counter < len(vänsterblock): 
     vänsterblockmandat += (mandat[mandatnamn.index(vänsterblock[counter])])
     counter += 1
@@ -302,7 +302,7 @@ while counter < len(blocklösa):
     blocklösamandat += (mandat[mandatnamn.index(blocklösa[counter])])
     counter += 1
 
-#String och int för grafen 
+#Listor för grafen 
 if vänsterblockmandat > 0:
     blocklegend.append("Vänsterblocket" + " (" + str(vänsterblockmandat) + " mandat)")
     blockfördelning.append(vänsterblockmandat)
