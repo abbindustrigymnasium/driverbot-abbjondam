@@ -1,16 +1,15 @@
-from random import randint
-import math
+from random import randint  #Impoterar random för att slumpa ett värde och matplotlib.pyplot för att göra en graf
 import matplotlib.pyplot as plt
 
-partierna = [
+partierna = [    #Dictionary med alla partier och deras värden (om extra parti ska läggas till behöver de befinna sig över icke-partierna för att koden ska fungera.)
      {
-    "namn" : "Sveriges socialdemokratiska arbetareparti",
-    "färg" : "red",
-    "inriktning" : False,
+    "namn" : "Sveriges socialdemokratiska arbetareparti",  
+    "färg" : "red", #Färg i graf
+    "inriktning" : False, #False == vänster, True == höger
     "ideologi" : ["Socialism"],
     "ledare" : "Olof palme",
     "block" : "Vänsterblocket",
-    "min" : 4.0,
+    "min" : 4.0, #min och max slumpas ett värde mellan för att bestämma andelen röster
     "max": 53.8,
     },
      {
@@ -95,26 +94,27 @@ partierna = [
     "färg" : "grey",
     "inriktning" : None,
     "block" : "",
-    "min": 3.5,
-    "max": 24.0,
+    "min": 8.2,  
+    "max": 19.9, 
     },
     {
     "namn" : "Som röstade blankt",
     "färg" : "lightgrey",
     "inriktning" : None,
     "block" : "",
-    "min": 3.5,
-    "max": 24.0,
-    },
-    
+    "min": 0.5,
+    "max": 4.0,
+    },    
 ]
 
 
+#slumpade röster
+
 totalaröster = 0
-borgröster = 0
-vänsterröster = 0
-blocklösa = 0
-block = []
+
+for i in partierna: #Slumpar röster mellan min och max 
+    i["röster"] = ((randint(i["min"]*10,(i["max"])*10))/10) #Multiplicerar med 10 eftersom min/max värdena har en decimal.
+    totalaröster = totalaröster + i["röster"] #Totalt antal röster 
 
 #procent
 partinamnen = []
@@ -122,24 +122,10 @@ partiochprocent = []
 procent = []
 färger = []
 
-#röstfördelning
-röstfördelningfärger = []
-totalaröstfördelnigsstorlekar = 0
-rösfördelnigtext = []
-counter = 0
+block = []
 
-#mandat
-
-
-for i in partierna: #Slumpar röster mellan min och max 
-    i["röster"] = ((randint(i["min"]*10,(i["max"])*10))/10)
-    totalaröster = totalaröster + i["röster"] #En variable för totalaröster
-
-
-#procent
-
-
-for i in partierna:
+ 
+for i in partierna:  #Bestämmer andelen röster per parti beroende på hur många "procent" slumpas till varje parti. Detta betyder att 100% alltid kommer att rösta men det finns en "parti" för de som inte röstar och de som röstar blankt
     tidigare = i["röster"]
     i["röster"] = (tidigare/totalaröster) * 100
     partinamnen.append(str(i["namn"]))
@@ -147,22 +133,52 @@ for i in partierna:
     partiochprocent.append(str(i["namn"]) + " (" + str(round(i["röster"],1)) + "%)")
     procent.append(i["röster"])
     färger.append(i["färg"])
-    if i["block"] == "Borgerliga blocket":
-        borgröster = borgröster + i["röster"]
-    elif i["block"] == "Vänsterblocket":
-        vänsterröster = vänsterröster + i["röster"]
-    else:
-        blocklösa = blocklösa + i["röster"]
 
 
 #röstfördelning
-
+röstfördelningfärger = []
+totalaröstfördelnigsstorlekar = 0
+rösfördelnigtext = []
+counter = 0
 röstfördelningfärger = färger[:len(färger)-2]
 röstfördelningstorlekar = procent[:len(procent)-2]
 partiröstfördelningnamn = partinamnen[:len(partinamnen)-2]
 
 
-for i in röstfördelningstorlekar:
+print("Partierna: ") 
+
+for i in partiröstfördelningnamn:
+    print(i)
+
+print("")
+
+for i in partierna:  #Event om vänsterpartiet "får" över 23.5% av rösterna 
+    if i["namn"] == "Vänsterpartiet Kommunisterna":
+        if i["röster"] >= 23.5:
+            print("Vänsterpartiet Kommunisterna har upptäckts fuska sig till över 23,5% av rösterna och tack vare detta resultat har kamraterna från moderlandet lyckats ta full kontroll över Sverige.")
+            
+            kamrater = ["Kamraterna från moderlandet (100%)"]
+            fig = plt.figure("Ny röstfördelning")
+            fig.patch.set_facecolor('#f7f7f7')
+            patches, texts = plt.pie(100, colors="red", shadow=False, startangle=100,wedgeprops={"edgecolor":"0",'linewidth': 1, 'antialiased': True})
+            legend = plt.legend(patches, kamrater, loc="best")
+            legend.get_frame().set_facecolor('lightgrey')
+            legend.get_frame().set_edgecolor('black')
+            plt.rcParams['lines.linewidth'] = 5
+            plt.axis('equal')
+            plt.tight_layout()
+            plt.title("Röstfördelning", bbox={'facecolor':'0.8', 'pad':5})
+            mng = plt.get_current_fig_manager()
+            mng.window.state('zoomed')
+            plt.subplots_adjust(left=None, bottom=None, right=None, top=0.9, wspace=None, hspace=None)
+
+
+
+            plt.show()
+            exit()
+
+
+for i in röstfördelningstorlekar:   #Räknar ut röstfördelning mellan partierna
     totalaröstfördelnigsstorlekar = totalaröstfördelnigsstorlekar + röstfördelningstorlekar[counter]
     counter += 1
 counter = 0
@@ -182,13 +198,13 @@ counter = 0
 index = []
 mandatfärger = röstfördelningfärger.copy()
 jämförelsetal = röstfördelningstorlekar.copy()
-# jämförelsetal = jämförelsetal[:len(jämförelsetal)-2]
 mandatnamn = partinamnen[:len(partinamnen)-2]
 mandatnamnochplatser = []
 totalamandat = 0
 mandat = []
 
-for i in mandatnamn:
+
+for i in mandatnamn:        #Tar bort partier under 4% 
     if jämförelsetal[counter] < 4.0:
         index.append(int(counter))
     counter += 1
@@ -206,36 +222,35 @@ antalöverspärr = len(mandatnamn)
 mandat = [0] * antalöverspärr
 
 
-for i in jämförelsetal:
+for i in jämförelsetal: #Totala procent efter rensning
     totalamandat = totalamandat + jämförelsetal[counter]
     counter +=1 
 counter = 0    
 
-for i in jämförelsetal:
+for i in jämförelsetal: #Jämförelsetal för varje parti
     jämförelsetal[counter] = (röstberättigad*(jämförelsetal[counter]/totalamandat))
     counter +=1 
 counter = 1
 röstetal = jämförelsetal.copy()
-while counter <= 349:
+while counter <= 349: #Delar ut mandat enligt jämkande uddatalsmetoden (bortser från utjäämmningsmandat)
     högstsindex = jämförelsetal.index(max(jämförelsetal))
     mandat[högstsindex] = mandat[högstsindex] + 1 
     jämförelsetal[högstsindex] = röstetal[högstsindex]/((2*mandat[högstsindex])+1)
     counter += 1
 
 counter = 0
-for i in mandatnamn:
+for i in mandatnamn: #Lista för partier och namn som visas i mandatgrafen
     mandatnamnochplatser.append(str(mandatnamn[counter]) + " (" + str(mandat[counter]) + " mandat)")
     counter += 1
 
-störst = mandat.index(max(mandat))
+störst = mandat.index(max(mandat)) 
 största = mandat.count(max(mandat))
 
-
-if största > 2:
-    störst = [i for i, x in enumerate(mandat) if x == max(mandat)]
-    print(mandatnamn[störst[0]] + ", " + mandatnamn[störst[1]] + " och " + mandatnamn[störst[2]] + " fick flest mandat med " + mandat[störst[0]] + " vardera")
-elif största > 1:
-    störst = [i for i, x in enumerate(mandat) if x == max(mandat)]
+if största > 2: #Om fler en två partier har lika många mandat
+    störst = [i for i, x in enumerate(mandat) if x == max(mandat)] #Lista med index av största partier
+    print(mandatnamn[störst[0]] + ", " + mandatnamn[störst[1]] + " och " + mandatnamn[störst[2]] + " fick flest mandat med " + mandat[störst[0]])
+elif största > 1: #Om två partier har lika många mandat
+    störst = [i for i, x in enumerate(mandat) if x == max(mandat)] #Lista med index av största partier
     print(str(mandatnamn[störst[0]]) + " och " + str(mandatnamn[störst[1]]) + " fick flest mandat med " + str(mandat[störst[0]]) + " vardera")
 elif största == 1:
     print(str(mandatnamn[störst]) + " fick flest mandat." + " (" + str(mandat[störst]) + " st)")
@@ -258,7 +273,7 @@ blocknamn = ["Vänsterblocket", "Borgerliga blocket", "Blocklösa" ]
 
 
 
-for i in partierna:     
+for i in partierna:     #Om partierna har fått mandat och vilket block de tillhör. Sorterar dem i listor
     for items in mandatnamn:
         if items == partinamnen[counter] and block[counter] == "Vänsterblocket":
             vänsterblock.append(partinamnen[counter])
@@ -270,7 +285,8 @@ for i in partierna:
 
 counter = 0
 
-while counter < len(vänsterblock):
+#Adderar mandaten får varje block
+while counter < len(vänsterblock): 
     vänsterblockmandat += (mandat[mandatnamn.index(vänsterblock[counter])])
     counter += 1
 
@@ -286,6 +302,7 @@ while counter < len(blocklösa):
     blocklösamandat += (mandat[mandatnamn.index(blocklösa[counter])])
     counter += 1
 
+#String och int för grafen 
 if vänsterblockmandat > 0:
     blocklegend.append("Vänsterblocket" + " (" + str(vänsterblockmandat) + " mandat)")
     blockfördelning.append(vänsterblockmandat)
@@ -298,43 +315,64 @@ if blocklösamandat > 0:
     blocklegend.append("Blocklösa partier" + " (" + str(blocklösamandat) + " mandat)")
     blockfördelning.append(blocklösamandat)
 
-blockvinnare = blockfördelning.index(max(blockfördelning))
-lika = blockfördelning.count(max(blockfördelning))
+blockvinnare = blockfördelning.index(max(blockfördelning)) #Flest antal mandat
+lika = blockfördelning.count(max(blockfördelning)) #Hur många block har flest antal mandat
 
 counter = 0
 
-if lika > 1:
-    blockvinnare = [i for i, x in enumerate(blockfördelning) if x == max(blockfördelning)]
+if lika > 1: #Om ingen vann valet
+    blockvinnare = [i for i, x in enumerate(blockfördelning) if x == max(blockfördelning)] #Index av största block
     print("Det två största blocken fick lika många mandat. " + str(blocknamn[blockvinnare[0]]) + " och " + str(blocknamn[blockvinnare[1]]) + " vann valet" "\n" "Tuffa förhandlingar kommer nu att ske mellan " + str(blocknamn[blockvinnare[0]]) + " och " + str(blocknamn[blockvinnare[1]]))
-elif lika == 1:
+elif lika == 1: #Om något block vann valet och skriver ut partiet som bildar regering (största partiet)
     print(blocknamn[blockvinnare] + " vann valet")
-    if blockvinnare == 0:
+    if blockvinnare == 0: 
         while counter < len(vänsterblock): 
             vblockmandat.append(mandat[mandatnamn.index(vänsterblock[counter])]) 
             counter += 1
         vinnare = vänsterblock[vblockmandat.index(max(vblockmandat))]
-        print(vinnare + " är det största partiet i det vinnande blocket och kommer att bilda regering.")
+        print(vinnare + " är det största partiet i det vinnande blocket och kommer att bilda regering.\n")
     elif blockvinnare == 1:
         while counter < len(borgerliga): 
             hblockmandat.append(mandat[mandatnamn.index(borgerliga[counter])])
             counter += 1
         vinnare = borgerliga[hblockmandat.index(max(hblockmandat))]
-        print(vinnare + " är det största partiet i det vinnande blocket och kommer att bilda regering.")
+        print(vinnare + " är det största partiet i det vinnande blocket och kommer att bilda regering.\n")
     elif blockvinnare == 2:
         while counter < len(blocklösa): 
             bblockmandat.append(mandat[mandatnamn.index(blocklösa[counter])]) 
             counter += 1
         vinnare = blocklösa[bblockmandat.index(max(bblockmandat))]
-        print(vinnare + " är det största partiet i det vinnande blocket och kommer att bilda regering.")
+        print(vinnare + " är det största partiet i det vinnande blocket och kommer att bilda regering.\n")
+
+
+#inriktning
+höger = 0
+vänster = 0
+
+for i in partierna: #höger/vänster röster
+    if i["inriktning"]:
+         höger += röstfördelningstorlekar[partiröstfördelningnamn.index(i["namn"])]
+    elif i["inriktning"] == False:
+        vänster += röstfördelningstorlekar[partiröstfördelningnamn.index(i["namn"])]
+
+print("Högerröster: " + str(round(höger)) +"%\nVänsterröster: " + str(round(vänster)) + "%\n")
 
 
 
+# graf block
 
-#graf block
 
-plt.figure("Blockfördelning")
+for i in partiochprocent:
+    print(i)
+
+graf = input("Grafisk visning av resultaten?\n(Svara Ja eller Nej) \n").lower()
+
+fig = plt.figure("Blockfördelning")
+fig.patch.set_facecolor('#f7f7f7')
 patches, texts = plt.pie(blockfördelning, colors=['red', 'blue', 'gold'], shadow=False, startangle=100,wedgeprops={"edgecolor":"0",'linewidth': 1, 'antialiased': True})
-plt.legend(patches, blocklegend, loc="best")
+legend = plt.legend(patches, blocklegend, loc="best")
+legend.get_frame().set_facecolor('lightgrey')
+legend.get_frame().set_edgecolor('black')
 plt.rcParams['lines.linewidth'] = 5
 plt.axis('equal')
 plt.tight_layout()
@@ -345,9 +383,12 @@ plt.subplots_adjust(left=None, bottom=None, right=None, top=0.9, wspace=None, hs
 
 
 #graf mandat
-plt.figure("Mandat")
+fig = plt.figure("Mandat")
+fig.patch.set_facecolor('#f7f7f7')
 patches, texts = plt.pie(mandat, colors=mandatfärger, shadow=False, startangle=100,wedgeprops={"edgecolor":"0",'linewidth': 1, 'antialiased': True})
-plt.legend(patches, mandatnamnochplatser, loc="best")
+legend = plt.legend(patches, mandatnamnochplatser, loc="best",shadow=True)
+legend.get_frame().set_facecolor('lightgrey')
+legend.get_frame().set_edgecolor('black')
 plt.rcParams['lines.linewidth'] = 5
 plt.axis('equal')
 plt.tight_layout()
@@ -358,9 +399,12 @@ plt.subplots_adjust(left=None, bottom=None, right=None, top=0.9, wspace=None, hs
 
 #graf röstfördelning
 
-plt.figure("Röstfördelning")
+fig = plt.figure("Röstfördelning")
+fig.patch.set_facecolor('#f7f7f7')
 patches, texts = plt.pie(röstfördelningstorlekar, colors=röstfördelningfärger, shadow=False, startangle=100,wedgeprops={"edgecolor":"0",'linewidth': 1, 'antialiased': True})
-plt.legend(patches, rösfördelnigtext, loc="best")
+legend = plt.legend(patches, rösfördelnigtext, loc="best")
+legend.get_frame().set_facecolor('lightgrey')
+legend.get_frame().set_edgecolor('black')
 plt.rcParams['lines.linewidth'] = 5
 plt.axis('equal')
 plt.tight_layout()
@@ -372,9 +416,12 @@ plt.subplots_adjust(left=None, bottom=None, right=None, top=0.9, wspace=None, hs
 
 #graf rösterna
 
-plt.figure("Röster")
+fig = plt.figure("Röster")
+fig.patch.set_facecolor('#f7f7f7')
 patches, texts = plt.pie(procent, colors=färger, shadow=False, startangle=100,wedgeprops={"edgecolor":"0",'linewidth': 1, 'antialiased': True})
-plt.legend(patches, partiochprocent, loc="best")
+legend = plt.legend(patches, partiochprocent, loc="best")
+legend.get_frame().set_facecolor('lightgrey')
+legend.get_frame().set_edgecolor('black')
 plt.rcParams['lines.linewidth'] = 5
 plt.axis('equal')
 plt.tight_layout()
@@ -384,4 +431,11 @@ mng.window.state('zoomed')
 plt.subplots_adjust(left=None, bottom=None, right=None, top=0.9, wspace=None, hspace=None)
 
 
-plt.show()
+
+
+if graf == "nej":
+    print("Ok")
+elif graf == "ja":
+    plt.show()
+else:
+    print("Du borde lära dig stava till ja eller nej.")
