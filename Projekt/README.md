@@ -1,0 +1,3 @@
+## Valsimulator
+
+Projektet är en valsimulator som simulerar ett val utifrån slumpande värden. Varje parti har en min och max värde som är range för vilka värden som kan slumpas. Andel röster per parti räknas ut genom att ta det slumpade värdet och dela det med summan av alla slumpade värden. Alla partier finns i ett dictionary tillsammans med icke-partier (för andeken som inte röstar och för andelen som röstar blankt). Sedan räknas mandaten ut för varje parti enligt jämkande uddatalsmetoden (bortser från utjämmningsmandat). Röstfördelning med och utan icke-partierna, mandatfördelningen och mandat fördelningen enligt block kan väljas att visas i grafer. Största partiet, största blocket och största partiet i det största blocket skrivs ut.   
