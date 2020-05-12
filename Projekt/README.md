@@ -9,7 +9,7 @@ Projektet är en valsimulator som simulerar ett val utifrån slumpande värden. 
 
 **Graf**
 
-Graferna är cirkeldiagram för att lättare för att få en visuell uppskattning av valresultatet. Ett stapeldiagram hade sett riktigt coolt ut, men efter att ha sett att en klasskamrat redan hade ett stapeldiagram bestämde jag mig för att testa något annat.
+Graferna är cirkeldiagram för att lättare för att få en visuell uppskattning av valresultatet. Graferna är popupfönster och användaren väljer om den vill att det ska visas grafer eftersom det kan vara störande. Ett stapeldiagram hade sett riktigt coolt ut, men efter att ha sett att en klasskamrat redan hade ett stapeldiagram bestämde jag mig för att testa något annat.
 
 ![alt text](https://github.com/abbindustrigymnasium/driverbot-abbjondam/blob/master/Projekt/Bilder/cirkeldiagramval.PNG?raw=true)
 
