@@ -13,7 +13,7 @@ Graferna är cirkeldiagram för att lättare för att få en visuell uppskattnin
 
 ![alt text](https://github.com/abbindustrigymnasium/driverbot-abbjondam/blob/master/Projekt/Bilder/cirkeldiagramval.PNG?raw=true)
 
-**Plannering**
+**Planering**
 
 ![alt text](https://github.com/abbindustrigymnasium/driverbot-abbjondam/blob/master/Projekt/Bilder/Pythonprojekt.PNG?raw=true)
 
