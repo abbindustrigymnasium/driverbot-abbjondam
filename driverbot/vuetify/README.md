@@ -1,24 +1,11 @@
 # driverbot
 
-## Project setup
-```
-npm install
-```
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
 
-### Compiles and minifies for production
-```
-npm run build
-```
+## Bilen
 
-### Lints and fixes files
-```
-npm run lint
-```
+I detta projekt skickas värden från en hemsida till en mikrokontroller på en lego bil
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### Planering
+
+
