@@ -8,4 +8,4 @@ I detta projekt skickas värden från envuetify hemsida till en mikrokontroller 
 
 ### Planering
 
-
+![alt text](https://github.com/abbindustrigymnasium/driverbot-abbjondam/blob/master/Projekt/Bilder/Capture.PNG?raw=true)
