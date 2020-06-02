@@ -26,6 +26,8 @@ EspMQTTClient client(
 #define motorPinLeftSpeed 4
 
 int degrees = 90; 
+int speed = 0;
+int hastighet = 500;
 
 void setup() {
   servo.attach(14); //D5
@@ -43,9 +45,9 @@ void turn(bool left, int svang) {
   {
     degrees -= svang;
 
-    if (degrees < 0)
+    if (degrees < 50)
     {
-      degrees = 0;
+      degrees = 50;
     }
     servo.write(degrees);
     Serial.println("Svänger vänster");
@@ -54,9 +56,9 @@ void turn(bool left, int svang) {
   {
 
     degrees += svang;
-    if (degrees > 180)
+    if (degrees > 130)
     {
-      degrees = 180;
+      degrees = 130;
     }
     servo.write(degrees);
     Serial.println("Svänger höger");
@@ -67,9 +69,42 @@ void turn(bool left, int svang) {
 
 }
 
-void drive(bool dir, int speed) {
+void drive(bool dir,int hastigheten) {
+  
+  if (dir == true)
+  {
+    hastighet += hastigheten;
+    if (hastighet > -500 and hastighet < 500)
+    {
+      hastighet = 500;
+    }
+  }
+  else 
+  {
+    hastighet -= hastigheten;
+    if (hastighet <500 and hastighet >-500)
+    {
+      hastighet = -500;
+    }
+  } 
 
-  servo.write(90);
+  if (hastighet > 1200)
+  {
+     hastighet = 1200 ;
+  }
+  else if (hastighet < -1200){
+    hastighet = -1200;
+  }
+
+  if (hastighet > 0){
+    dir = true;
+    speed = hastighet;
+  }
+  else{
+    dir = false;
+    speed = hastighet * -1;
+  }
+
   Serial.println("Åker");
   Serial.println(speed);
   digitalWrite(motorPinRightDir, dir);
@@ -82,37 +117,42 @@ void onConnectionEstablished()
   client.subscribe("jonathan.damsgaardfalck@abbindustrigymnasium.se/driverbot", [] (const String & payload)
   {
 
-    int length = payload.length();
+    int payloadlength = payload.length();
     int commaIndex = payload.indexOf(',');
-    String turnstring = payload.substring(0,commaIndex);
+   /* String turnstring = payload.substring(0,commaIndex);
     String drivestring = payload.substring(commaIndex + 2,length);
     int turnlength = turnstring.length();
-    int drivelength = drivestring.length();
+    int drivelength = drivestring.length();*/
     char info = payload.charAt(0);
     char info2 = payload.charAt(commaIndex+1);
     bool fb = false;
     bool dir = false;
-    if (drivelength > 0)
+    if (payloadlength > 0)
     {
-      String hastighet = drivestring,substring(1,drivelength);
-      int speed = hastighet.toInt();
-      if (info2 == 'f')
+      /*String hastighet = drivestring,substring(1,drivelength);
+      int speed = hastighet.toInt(); */
+      if (info2 == 'f'){
         fb = true;
+        drive(fb,25);
+        }
       else if (info2 == 'b'){
-        fb = false;  
+        fb = false; 
+        drive(fb,25);  
       }
-      drive(fb, speed);
+     
     }
-    if (turnlength > 0)
+    if (payloadlength > 0)
     {
-      String thastighet = turnstring.substring(1,turnlength);
-      int tspeed = thastighet.toInt();
-      if (info == 'v')
+      /*String thastighet = turnstring.substring(1,turnlength);
+      int tspeed = thastighet.toInt();*/
+      if (info == 'v'){
         dir = true;
+        turn(dir,3);}
       else if (info == 'h'){
-        dir = false;  
+        dir = false;
+        turn(dir,3);
       }
-      turn(dir, tspeed);
+      
     }
    
     Serial.println(payload); 
